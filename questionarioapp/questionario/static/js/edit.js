@@ -24,28 +24,29 @@ document.addEventListener("DOMContentLoaded", function () {
      // Novo evento para salvar os dados das questões e alternativas
     const form = document.getElementById("questionario-form");
     form.addEventListener("submit", function () {
-    const questoesDivs = document.querySelectorAll(".questao");
-    const dadosQuestoesAlternativas = [];
+        const questoesDivs = document.querySelectorAll(".questao");
+        const dadosQuestoesAlternativas = [];
 
-    questoesDivs.forEach(function (questaoDiv) {
-        const questaoTitulo = questaoDiv.querySelector("[name='questoes']").value;
-        const alternativasTexto = questaoDiv.querySelector("[name='alternativas']").value;
+        questoesDivs.forEach(function (questaoDiv) {
+            const questaoTitulo = questaoDiv.querySelector("[name='questoes']").value.trim(); 
+            const alternativasTexto = questaoDiv.querySelector("[name='alternativas']").value.trim(); 
 
-        // Dividir as alternativas pelo caractere ";"
-        const alternativasArray = alternativasTexto.split(";");
+            
+            if (questaoTitulo !== "") {
+                
+                const alternativasArray = alternativasTexto.split(";");
 
-      // Armazenar os dados em um objeto
-      const questaoAlternativas = {
-        questao: questaoTitulo,
-        alternativas: alternativasArray,
-    };
+                const questaoAlternativas = {
+                    questao: questaoTitulo,
+                    alternativas: alternativasArray,
+                };
 
-        dadosQuestoesAlternativas.push(questaoAlternativas);
+                dadosQuestoesAlternativas.push(questaoAlternativas);
+            }
+        });
+
+        // Converter os dados em JSON e definir no campo oculto
+        const questoesAlternativasInput = document.getElementById("questoes-alternativas-input");
+        questoesAlternativasInput.value = JSON.stringify(dadosQuestoesAlternativas);
     });
-    
-    // Converter os dados em JSON e definir no campo oculto
-    const questoesAlternativasInput = document.getElementById("questoes-alternativas-input");
-    questoesAlternativasInput.value = JSON.stringify(dadosQuestoesAlternativas);
-});
-
 });
