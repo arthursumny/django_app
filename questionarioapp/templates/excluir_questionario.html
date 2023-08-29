@@ -1,0 +1,10 @@
+{% extends "lista_questionarios.html" %}
+
+{% block content %}
+  <h2>Você tem certeza de que deseja excluir o questionário "{{ questionario.titulo }}"?</h2>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirmar Exclusão</button>
+    <a href="{% url 'lista_questionarios' %}">Cancelar</a>
+  </form>
+{% endblock %}

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header id="mr-nav">
+        <span>
+            <img src="{% static 'img\logo_branco.png' %}" alt="Logo Unoesc">   
+        </span>   
+        <a href="{% url 'edit' %}"><button>Editar Questionário</button></a>
+        <a href="{% url 'lista_questionarios' %}"><button>Questionário</button></a>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f5f5f5;
+                margin: 0;
+                padding: 0;
+            }
+            #editar_questionario {
+                background-color: white;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                margin: 20px auto;
+                padding: 20px;
+                width: 80%;
+            }
+
+            #editar_questionario h1 {
+                font-size: 30px;
+                text-align: center;
+                margin-top: 10px;
+            }
+    
+            #questao-container {
+                text-align: center;
+            }
+    
+            #page-header h1 {
+                font-size: 30px;
+                text-align: center;
+                
+            }
+
+            #page-header h2 {
+                font-size: 20px;
+                text-align: center;
+                
+            }
+    
+            #page-header p {
+                font-size: 16px;
+                text-align: justify;
+            }
+
+            h4 {
+                font-size: 12px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+    
+            h2 {
+                font-size: 20px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+    
+            p {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            label {
+                display:none;
+            }
+            #id_titulo {
+                margin-bottom: 10px;
+            }
+            .questao input[name="alternativas"] {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 5px;
+                border: 1px solid #ccc;
+                min-height: 40px;
+                transition: height 0.2s;
+            }
+        </style>
+    </header>
+    <div id="page">
+        <main id="page-content">
+            <div id="page-header"><h1>Editar Questionário</h1></div>
+            <div id="editar_questionario">
+                <h1>Questionário</h1>
+                <form method="post" id="questionario-form">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <h4>Analise a afirmação de cada nível e assinale a resposta mais adequada para sua realidade atual:
+                    </h4>
+                    <div id="questao-container">
+                        <!-- Conteúdo das questões e alternativas será adicionado aqui -->
+                        <input type="hidden" name='questoes_alternativas' id="questoes-alternativas-input">
+                    </div>
+                    <button type="button" id="add-questao-btn">Adicionar Questão</button>
+                    <button type="submit">Salvar Questionário</button>
+                </form>
+            </div>
+        </main>
+    </div>
+    <script src="{% static 'js/edit.js' %}"></script>
+</body>
+</html>

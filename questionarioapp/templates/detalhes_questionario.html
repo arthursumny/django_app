@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header id="mr-nav">
+        <span>
+            <img src="{% static 'img\logo_branco.png' %}" alt="Logo Unoesc">   
+        </span>   
+        <a href="{% url 'edit' %}"><button>Editar Questionário</button></a>
+        <a href="{% url 'lista_questionarios' %}"><button>Questionário</button></a>
+        <style>
+            /* CSS específico para a página de detalhes do questionário */
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f5f5f5;
+                margin: 0;
+                padding: 0;
+            }
+            #page {
+                background-color: white;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                margin: 20px auto;
+                padding: 20px;
+                width: 80%;
+            }
+    
+            #page-content {
+                margin: 0 auto;
+                max-width: 800px;
+            }
+    
+            #page-header h1 {
+                font-size: 30px;
+                margin-bottom: 30px;
+                text-align: center;
+                
+            }
+
+            #page-header h2 {
+                font-size: 20px;
+                margin-bottom: 10px;
+                text-align: center;
+                
+            }
+    
+            #page-header p {
+                font-size: 16px;
+                margin-bottom: 20px;
+                text-align: justify;
+            }
+
+            h4 {
+                font-size: 12px;
+                margin-top: 20px;
+                text-align: center;
+            }
+    
+            h2 {
+                font-size: 20px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+    
+            p {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+        </style>
+    </header>
+    <div id="page">
+        <main id="page-content">
+            <div id="page-header">
+                <h1>Questionário</h1>
+                <h2>{{ questionario.titulo }}</h2>
+                <p>{{ questionario.explicacao}}</p>
+            </div>
+            <h4>Analise a afirmação de cada nível e assinale a resposta mais adequada para sua realidade atual:
+            </h4>
+                {% for questao in questionario.questao_set.all %}
+                    <h2>{{ questao.titulo }}</h2>
+                    {% for alternativa in questao.alternativa_set.all %}
+                        <p>{{ forloop.counter }}. "{{ alternativa.texto }}"</p>
+                    {% endfor %}
+                {% endfor %}
+        </main>
+    </div>
+</body>
+</html>

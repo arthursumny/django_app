@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Questionários</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header id="mr-nav">
+        <span>
+            <img src="{% static 'img/logo_branco.png' %}" alt="Logo Unoesc">   
+        </span>   
+        <a href="{% url 'edit' %}"><button>Editar Questionário</button></a>
+        <a href="{% url 'lista_questionarios' %}"><button>Questionários</button></a>
+    </header>
+    <div id="page">
+        <main id="page-content">
+            {% block content %}
+            <div id="page-header"><h1>Lista de Questionários</h1></div>
+            <ul>
+                {% for questionario in questionarios %}
+                    <li>
+                        <strong>Título:</strong> {{ questionario.titulo }}<br>
+                        <a href="{% url 'detalhes_questionario' questionario.id %}">Ver Detalhes</a>
+                        <a href="{% url 'excluir_questionario' questionario.id %}">Excluir</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% endblock %}
+        </main>
+    </div>
+</body>
+</html>
