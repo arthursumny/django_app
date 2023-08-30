@@ -13,6 +13,7 @@ class Questao(models.Model):
 class Alternativa(models.Model):
     questao = models.ForeignKey(Questao, on_delete=models.CASCADE)
     texto = models.CharField(max_length=200)
+    pontuacao = models.IntegerField(default=0)
     
 
     

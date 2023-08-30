@@ -12,8 +12,9 @@
         <span>
             <img src="{% static 'img/logo_branco.png' %}" alt="Logo Unoesc">   
         </span>   
-        <a href="{% url 'edit' %}"><button>Editar Questionário</button></a>
+        <a href="{% url 'edit' %}"><button>Criar Questionário</button></a>
         <a href="{% url 'lista_questionarios' %}"><button>Questionários</button></a>
+        
     </header>
     <div id="page">
         <main id="page-content">
@@ -23,8 +24,9 @@
                 {% for questionario in questionarios %}
                     <li>
                         <strong>Título:</strong> {{ questionario.titulo }}<br>
-                        <a href="{% url 'detalhes_questionario' questionario.id %}">Ver Detalhes</a>
-                        <a href="{% url 'excluir_questionario' questionario.id %}">Excluir</a>
+                        <a href="{% url 'detalhes_questionario' questionario.id %}"><button>Ver Detalhes</button></a>
+                        <a href="{% url 'excluir_questionario' questionario.id %}"><button>Excluir</button></a>
+                        <br><br>
                     </li>
                 {% endfor %}
             </ul>

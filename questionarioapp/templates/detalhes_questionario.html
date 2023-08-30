@@ -12,8 +12,8 @@
         <span>
             <img src="{% static 'img\logo_branco.png' %}" alt="Logo Unoesc">   
         </span>   
-        <a href="{% url 'edit' %}"><button>Editar Questionário</button></a>
-        <a href="{% url 'lista_questionarios' %}"><button>Questionário</button></a>
+        <a href="{% url 'edit' %}"><button>Criar Questionário</button></a>
+        <a href="{% url 'lista_questionarios' %}"><button>Questionários</button></a>
         <style>
             /* CSS específico para a página de detalhes do questionário */
             body {
@@ -72,11 +72,17 @@
                 font-size: 16px;
                 margin-bottom: 10px;
             }
+
+            #pontuacao-label {
+                margin-top:5px;
+                padding-top: 5px;
+            }
         </style>
     </header>
     <div id="page">
         <main id="page-content">
             <div id="page-header">
+                <a href="{% url 'editar_questionario' questionario.id %}"><button>Editar</button></a>
                 <h1>Questionário</h1>
                 <h2>{{ questionario.titulo }}</h2>
                 <p>{{ questionario.explicacao}}</p>
@@ -86,7 +92,7 @@
                 {% for questao in questionario.questao_set.all %}
                     <h2>{{ questao.titulo }}</h2>
                     {% for alternativa in questao.alternativa_set.all %}
-                        <p>{{ forloop.counter }}. "{{ alternativa.texto }}"</p>
+                        <p><label>{{ forloop.counter }}. "{{ alternativa.texto }}"</label> <br> <label id="pontuacao-label">Pontuação: {{ alternativa.pontuacao }}</label></p>
                     {% endfor %}
                 {% endfor %}
         </main>

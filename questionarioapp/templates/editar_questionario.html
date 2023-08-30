@@ -12,17 +12,94 @@
         <span>
             <img src="{% static 'img\logo_branco.png' %}" alt="Logo Unoesc">   
         </span>
-        <a href="{% url 'editar_questionario' questionario.id %}"><button>Editar Questionário</button></a>
-        <a href="{% url 'lista_questionarios' %}"><button>Questionário</button></a>
+        <a href="{% url 'edit' %}"><button>Criar Questionário</button></a>
+        <a href="{% url 'lista_questionarios' %}"><button>Questionários</button></a>
+        <style>
+            /* CSS específico para a página de detalhes do questionário */
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f5f5f5;
+                margin: 0;
+                padding: 0;
+            }
+            #page {
+                background-color: white;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                margin: 20px auto;
+                padding: 20px;
+                width: 80%;
+            }
+    
+            #page-content {
+                margin: 0 auto;
+                max-width: 800px;
+            }
+    
+            #page-header h1 {
+                font-size: 30px;
+                margin-bottom: 30px;
+                text-align: center;
+                align-items: center;
+                
+            }
+
+            #page-header h2 {
+                font-size: 20px;
+                margin-bottom: 10px;
+                text-align: center;
+                
+            }
+    
+            #page-header p {
+                font-size: 16px;
+                margin-bottom: 20px;
+                text-align: justify;
+            }
+
+            h4 {
+                font-size: 12px;
+                margin-top: 20px;
+                text-align: center;
+            }
+    
+            h2 {
+                font-size: 20px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+    
+            p {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            #pontuacao-label {
+                margin-top:5px;
+                padding-top: 5px;
+            }
+        </style>
     </header>
     <div id="page">
         <main id="page-content">
-            <form method="post" id="questionario-form">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Salvar Edições</button>
-            </form>
+            <div id="page-header">
+                <button id="save-button">Salvar Edições</button>
+                <h1>Questionário</h1>
+                <h2><input type="text" name="titulo" value="{{ questionario.titulo }}" style="width:500px; text-align:center;"></h2>
+                <p><textarea cols="100" rows="10" wrap="hard" name="explicacao">{{ questionario.explicacao }}</textarea></p>
+        </div>
+        <h4>Analise a afirmação de cada nível e assinale a resposta mais adequada para sua realidade atual:</h4>
+        <form id="editar-form" method="post">
+            {% csrf_token %}
+            {% for questao in questionario.questao_set.all %}
+                <h2><textarea cols="100" rows="1" name="questao-titulo">{{ questao.titulo }}</textarea></h2>
+                {% for alternativa in questao.alternativa_set.all %}
+                    <p><label>{{ forloop.counter }}. <textarea cols="100" rows="3" name="alternativa">{{ alternativa.texto }}</textarea></label> <br> <label id="pontuacao-label">Pontuação: <input type="text" name="pontuacao" value="{{ alternativa.pontuacao }}"></label></p>
+                {% endfor %}
+            {% endfor %}
+        </form>
         </main>
     </div>
+    <script src="{% static 'js/edit.js' %}"></script>
 </body>
 </html>

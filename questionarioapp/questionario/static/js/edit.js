@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const newAlternativasInput = document.createElement("input");
         newAlternativasInput.setAttribute("type", "text");
         newAlternativasInput.setAttribute("name", "alternativas");
-        newAlternativasInput.setAttribute("placeholder", "Alternativas separadas por ;");
+        newAlternativasInput.setAttribute("placeholder", "Alternativas separadas por ; (Ex: alternativa1{5};alternativa2{2})");
 
         newQuestaoDiv.appendChild(newQuestaoInput);
         newQuestaoDiv.appendChild(newAlternativasInput);
@@ -48,5 +48,25 @@ document.addEventListener("DOMContentLoaded", function () {
         // Converter os dados em JSON e definir no campo oculto
         const questoesAlternativasInput = document.getElementById("questoes-alternativas-input");
         questoesAlternativasInput.value = JSON.stringify(dadosQuestoesAlternativas);
+    });
+
+    const saveButton = document.getElementById("save-button");
+    saveButton.addEventListener("click", function () {
+        console.log("clicado")
+        const form = document.getElementById("editar-form");
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: "POST",
+            body: formData,
+        }).then(response => {
+            if (response.ok) {
+                console.log("Edições salvas com sucesso!");
+            } else {
+                console.error("Erro ao salvar edições.");
+            }
+        }).catch(error => {
+            console.error("Erro ao salvar edições:", error);
+        });
     });
 });
