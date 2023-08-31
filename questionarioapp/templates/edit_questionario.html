@@ -78,28 +78,45 @@
                 margin-top:5px;
                 padding-top: 5px;
             }
+            .questao input[name="alternativas"] {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 5px;
+                border: 1px solid #ccc;
+                min-height: 40px;
+                transition: height 0.2s;
+            }
         </style>
     </header>
     <div id="page">
-        <main id="page-content">
-            <div id="page-header">
-                <button id="save-button">Salvar Edições</button>
-                <h1>Questionário</h1>
-                <h2><input type="text" name="titulo" value="{{ questionario.titulo }}" style="width:500px; text-align:center;"></h2>
-                <p><textarea cols="100" rows="10" wrap="hard" name="explicacao">{{ questionario.explicacao }}</textarea></p>
-        </div>
-        <h4>Analise a afirmação de cada nível e assinale a resposta mais adequada para sua realidade atual:</h4>
-        <form id="editar-form" method="post">
-            {% csrf_token %}
-            {% for questao in questionario.questao_set.all %}
-                <h2><textarea cols="100" rows="1" name="questao-titulo">{{ questao.titulo }}</textarea></h2>
-                {% for alternativa in questao.alternativa_set.all %}
-                    <p><label>{{ forloop.counter }}. <textarea cols="100" rows="3" name="alternativa">{{ alternativa.texto }}</textarea></label> <br> <label id="pontuacao-label">Pontuação: <input type="text" name="pontuacao" value="{{ alternativa.pontuacao }}"></label></p>
-                {% endfor %}
-            {% endfor %}
-        </form>
-        </main>
-    </div>
-    <script src="{% static 'js/edit.js' %}"></script>
+      <main id="page-content">
+          <div id="page-header">
+{% block content %}
+<h1>Questionário</h1>
+<form method="POST">
+    {% csrf_token %}
+    <h2><input type="text" name="titulo" value="{{ questionario.titulo }}"></h2>
+    <p><textarea cols="100" rows="10" wrap="hard" name="explicacao">{{ questionario.explicacao }}</textarea></p>
+  </div>
+  <h4>Analise a afirmação de cada nível e assinale a resposta mais adequada para sua realidade atual:</h4>
+  <div id="questao-container">
+    {% for questao in questionario.questao_set.all %}
+      <h2><input type="text" name="questao-titulo-{{ forloop.counter0 }}" value="{{ questao.titulo }}"></h2>
+      {% for alternativa in questao.alternativa_set.all %}
+        <p><input type="text" name="alternativa-{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}" value="{{ alternativa.texto }}">
+        <input type="text" name="pontuacao-{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}" value="{{ alternativa.pontuacao }}"></p>
+      {% endfor %}
+    {% endfor %}
+  </div>
+  <button type="button" id="add-questao-btn">Adicionar Questão</button>
+  
+    <button type="submit">Salvar Questionário</button>
+  </form>
+{% endblock %}
+<a href="{% url 'edit_score' %}" class="btn btn-primary">Edit Intervals</a>
+</main>
+</div>
+<script src="{% static 'js/edit.js' %}"></script>
 </body>
 </html>

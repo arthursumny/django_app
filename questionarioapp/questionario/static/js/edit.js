@@ -21,6 +21,28 @@ document.addEventListener("DOMContentLoaded", function () {
         questaoContainer.appendChild(newQuestaoDiv);
     });
 
+    const addScoreButton = document.getElementById("add-score-btn");
+const scoreContainer = document.getElementById("score-container");
+
+addScoreButton.addEventListener("click", function () {
+    const newScoreDiv = document.createElement("div");
+    newScoreDiv.classList.add("score");
+
+    const newExplicacaoInput = document.createElement("input");
+    newExplicacaoInput.setAttribute("type", "text");
+    newExplicacaoInput.setAttribute("name", "explicacoes");
+    newExplicacaoInput.setAttribute("placeholder", "Explicação");
+
+    const newPontuacaoInput = document.createElement("input");
+    newPontuacaoInput.setAttribute("type", "text");
+    newPontuacaoInput.setAttribute("name", "pontuacoes");
+    newPontuacaoInput.setAttribute("placeholder", "Pontuação");
+
+    newScoreDiv.appendChild(newExplicacaoInput);
+    newScoreDiv.appendChild(newPontuacaoInput);
+    scoreContainer.appendChild(newScoreDiv);
+});
+
      // Novo evento para salvar os dados das questões e alternativas
     const form = document.getElementById("questionario-form");
     form.addEventListener("submit", function () {
@@ -48,25 +70,5 @@ document.addEventListener("DOMContentLoaded", function () {
         // Converter os dados em JSON e definir no campo oculto
         const questoesAlternativasInput = document.getElementById("questoes-alternativas-input");
         questoesAlternativasInput.value = JSON.stringify(dadosQuestoesAlternativas);
-    });
-
-    const saveButton = document.getElementById("save-button");
-    saveButton.addEventListener("click", function () {
-        console.log("clicado")
-        const form = document.getElementById("editar-form");
-        const formData = new FormData(form);
-
-        fetch(form.action, {
-            method: "POST",
-            body: formData,
-        }).then(response => {
-            if (response.ok) {
-                console.log("Edições salvas com sucesso!");
-            } else {
-                console.error("Erro ao salvar edições.");
-            }
-        }).catch(error => {
-            console.error("Erro ao salvar edições:", error);
-        });
     });
 });
