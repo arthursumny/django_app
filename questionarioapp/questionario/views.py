@@ -2,7 +2,7 @@
 
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Questionario, Questao, Alternativa, Score
+from .models import Questionario, Questao, Alternativa, Questao1, Alternativa1
 from .forms import QuestionarioForm
 import json
 
@@ -28,6 +28,18 @@ def edit(request):
                     pontuacao = int(pontuacao_part[0].strip()) if len(pontuacao_part) > 1 else 0
                     alternativa = Alternativa.objects.create(questao=questao, texto=alternativa_text, pontuacao=pontuacao)
                     
+            questoes_alternativas_json1 = form.cleaned_data['questoes_alternativas1']
+            questoes_alternativas1 = json.loads(questoes_alternativas_json1)
+            
+            for q_a1 in questoes_alternativas1:
+                questao_titulo1 = q_a1['questao1']
+                alternativas1 = q_a1['alternativas1']
+                questao1 = Questao1.objects.create(questionario=questionario, titulo1=questao_titulo1)
+                alternativa_part1 = alternativas1.split("#")
+                alternativa_text1 = alternativa_part1[0].strip()
+                pontuacao1 = int(alternativa_part1[1].strip())
+                alternativa1 = Alternativa1.objects.create(questao1=questao1, texto1=alternativa_text1, pontuacao1=pontuacao1)
+                           
             return redirect('lista_questionarios')
     else:
         form = QuestionarioForm()
@@ -53,47 +65,6 @@ def excluir_questionario(request, questionario_id):
         return redirect('lista_questionarios')
     
     return render(request, 'excluir_questionario.html', {'questionario': questionario})
-
-def editar_questionario(request, questionario_id):
-    questionario = Questionario.objects.get(pk=questionario_id)
-    return render(request, 'editar_questionario.html', {'questionario': questionario})
-def edit(request):
-    if request.method == 'POST':
-        form = QuestionarioForm(request.POST)
-        if form.is_valid():
-            titulo = form.cleaned_data['titulo']
-            explicacao = form.cleaned_data['explicacao']
-            questionario = Questionario.objects.create(titulo=titulo, explicacao=explicacao)
-
-            questoes_alternativas_json = form.cleaned_data['questoes_alternativas']
-            questoes_alternativas = json.loads(questoes_alternativas_json)
-
-            for q_a in questoes_alternativas:
-                questao_titulo = q_a['questao']
-                alternativas = q_a['alternativas']
-                questao = Questao.objects.create(questionario=questionario, titulo=questao_titulo)
-                for alternativa_texto in alternativas:
-                    alternativa_parts = alternativa_texto.split("{")
-                    alternativa_text = alternativa_parts[0].strip()
-                    pontuacao_part = alternativa_parts[1].split("}")
-                    pontuacao = int(pontuacao_part[0].strip()) if len(pontuacao_part) > 1 else 0
-                    alternativa = Alternativa.objects.create(questao=questao, texto=alternativa_text, pontuacao=pontuacao)
-                    
-            score_intervals_json = form.cleaned_data['score_intervals']
-            score_intervals = json.loads(score_intervals_json)
-                    
-            for s_i in score_intervals:
-                explicacao_parts = s_i.split("{")
-                explicacao_text = explicacao_parts[0].strip()
-                pontuacao_part = explicacao_parts[1].split("}")
-                pontuacao = int(pontuacao_part[0].strip()) if len(pontuacao_part) > 1 else 0
-                score = Score.objects.create(questionario=questionario, explicacao=explicacao_text, pontuacao=pontuacao)
-            return redirect('lista_questionarios')
-    else:
-        form = QuestionarioForm()
-
-    return render(request, "edit.html", {"form": form})
-
 
 def edit_questionario(request, questionario_id):
     questionario = get_object_or_404(Questionario, pk=questionario_id)
@@ -131,24 +102,43 @@ def edit_questionario(request, questionario_id):
         'alternativas': alternativas,
     })
     
-def edit_score(request):
-    scores = Score.objects.all()
-
+def edit_nivel(request, questionario_id):
+    questionario = get_object_or_404(Questionario, pk=questionario_id)
+    
+    titulo = questionario.titulo
+    explicacao = questionario.explicacao
+    
+    questoes1 = questionario.questao1_set.all()
+    
+    alternativas1 = []
+    for questao1 in questoes1:
+        alternativas1.append(questao1.alternativa1_set.all())
+        
     if request.method == 'POST':
-        # Process and save the score and explanation data
-        scores = request.POST.getlist('score')
-        explanations = request.POST.getlist('explanation')
-        score_intervals = request.POST.getlist('score_intervals', ['0'])  # Assign default value of '0'
+        questionario.titulo = request.POST.get('titulo')
+        questionario.explicacao = request.POST.get('explicacao')
+        questionario.save()
+        
+        for i, questao1 in enumerate(questoes1):
+            questao1.titulo1 = request.POST.get(f'questao1-titulo-{i}')
+            questao1.save()
+            
+            for j, alternativa1 in enumerate(alternativas1[i]):
+                alternativa1.texto1 = request.POST.get(f'alternativa1-{i}-{j}')
+                alternativa1.pontuacao1 = request.POST.get(f'pontuacao1-{i}-{j}')
+                alternativa1.save()
+        
+        return redirect('detalhes_questionario', questionario_id)
+    
+    return render(request, 'edit_nivel.html', {
+        'questionario': questionario,
+        'titulo': titulo,
+        'explicacao': explicacao,
+        'questoes': questoes1,
+        'alternativas1': alternativas1,
+        
+    })
+        
+  
 
-        for i in range(len(scores)):
-            score = scores[i]
-            explanation = explanations[i]
-            interval = score_intervals[i]
-            score_obj = Score.objects.get(id=score)
-            score_obj.pontuacao = score if score else '0'
-            score_obj.explicacao = explanation if explanation else ''
-            score_obj.save()
-
-        return redirect('edit_questionario')
-
-    return render(request, 'edit_intervals.html', {'scores': scores})
+   

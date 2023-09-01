@@ -15,7 +15,11 @@ class Alternativa(models.Model):
     texto = models.CharField(max_length=200)
     pontuacao = models.IntegerField(default=0)
     
-class Score(models.Model):
+class Questao1(models.Model):
     questionario = models.ForeignKey(Questionario, on_delete=models.CASCADE)
-    explicacao = models.TextField(default='')
-    pontuacao = models.IntegerField(default=0)
+    titulo1 = models.CharField(max_length=200)
+    
+class Alternativa1(models.Model):
+    questao1 = models.ForeignKey(Questao1, on_delete=models.CASCADE)
+    texto1 = models.CharField(max_length=200)
+    pontuacao1 = models.IntegerField(default=0)

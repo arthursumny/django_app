@@ -1,6 +1,27 @@
 document.addEventListener("DOMContentLoaded", function () {
     const addQuestaoButton = document.getElementById("add-questao-btn");
     const questaoContainer = document.getElementById("questao-container");
+    const addQuestaoButton1 = document.getElementById("add-questao-btn1");
+    const questaoContainer1 = document.getElementById("questao-container1");
+
+    addQuestaoButton1.addEventListener("click", function () {
+        const newQuestaoDiv1 = document.createElement("div");
+        newQuestaoDiv1.classList.add("questao1");
+
+        const newQuestaoInput1 = document.createElement("input");
+        newQuestaoInput1.setAttribute("type", "text");
+        newQuestaoInput1.setAttribute("name", "questoes1");
+        newQuestaoInput1.setAttribute("placeholder", "Título do Nível");
+
+        const newAlternativasInput1 = document.createElement("input");
+        newAlternativasInput1.setAttribute("type", "text");
+        newAlternativasInput1.setAttribute("name", "alternativas1");
+        newAlternativasInput1.setAttribute("placeholder", "Ex: Explicação do Nível #50");
+
+        newQuestaoDiv1.appendChild(newQuestaoInput1);
+        newQuestaoDiv1.appendChild(newAlternativasInput1);
+        questaoContainer1.appendChild(newQuestaoDiv1);
+    })
 
     addQuestaoButton.addEventListener("click", function () {
         const newQuestaoDiv = document.createElement("div");
@@ -21,33 +42,28 @@ document.addEventListener("DOMContentLoaded", function () {
         questaoContainer.appendChild(newQuestaoDiv);
     });
 
-    const addScoreButton = document.getElementById("add-score-btn");
-const scoreContainer = document.getElementById("score-container");
-
-addScoreButton.addEventListener("click", function () {
-    const newScoreDiv = document.createElement("div");
-    newScoreDiv.classList.add("score");
-
-    const newExplicacaoInput = document.createElement("input");
-    newExplicacaoInput.setAttribute("type", "text");
-    newExplicacaoInput.setAttribute("name", "explicacoes");
-    newExplicacaoInput.setAttribute("placeholder", "Explicação");
-
-    const newPontuacaoInput = document.createElement("input");
-    newPontuacaoInput.setAttribute("type", "text");
-    newPontuacaoInput.setAttribute("name", "pontuacoes");
-    newPontuacaoInput.setAttribute("placeholder", "Pontuação");
-
-    newScoreDiv.appendChild(newExplicacaoInput);
-    newScoreDiv.appendChild(newPontuacaoInput);
-    scoreContainer.appendChild(newScoreDiv);
-});
-
      // Novo evento para salvar os dados das questões e alternativas
     const form = document.getElementById("questionario-form");
-    form.addEventListener("submit", function () {
+        form.addEventListener("submit", function () {
         const questoesDivs = document.querySelectorAll(".questao");
+        const questoesDivs1 = document.querySelectorAll(".questao1");
+        const dadosQuestoesAlternativas1 = [];
         const dadosQuestoesAlternativas = [];
+
+        questoesDivs1.forEach(function (questaoDiv1) {
+            const questaoTitulo1 = questaoDiv1.querySelector("[name='questoes1']").value.trim(); 
+            const alternativasTexto1 = questaoDiv1.querySelector("[name='alternativas1']").value.trim();
+
+            if (questaoTitulo1 !== "") {
+
+                const questaoAlternativas1 = {
+                    questao1: questaoTitulo1,
+                    alternativas1: alternativasTexto1,
+                };
+
+                dadosQuestoesAlternativas1.push(questaoAlternativas1);
+            }
+        })
 
         questoesDivs.forEach(function (questaoDiv) {
             const questaoTitulo = questaoDiv.querySelector("[name='questoes']").value.trim(); 
@@ -70,5 +86,7 @@ addScoreButton.addEventListener("click", function () {
         // Converter os dados em JSON e definir no campo oculto
         const questoesAlternativasInput = document.getElementById("questoes-alternativas-input");
         questoesAlternativasInput.value = JSON.stringify(dadosQuestoesAlternativas);
+        const questoesAlternativasInput1 = document.getElementById("questoes-alternativas-input1");
+        questoesAlternativasInput1.value = JSON.stringify(dadosQuestoesAlternativas1);
     });
 });
