@@ -94,13 +94,14 @@
           <div id="page-header">
 {% block content %}
 <h1>Questionário</h1>
-<form method="POST">
+<form id ="questionario-form" method="POST">
     {% csrf_token %}
     <h2><input type="text" name="titulo" value="{{ questionario.titulo }}"></h2>
     <p><textarea cols="100" rows="10" wrap="hard" name="explicacao">{{ questionario.explicacao }}</textarea></p>
   </div>
   <h4>Analise a afirmação de cada nível e assinale a resposta mais adequada para sua realidade atual:</h4>
   <div id="questao-container">
+    <h3>Questões</h3>
     {% for questao in questionario.questao_set.all %}
       <h2><input type="text" name="questao-titulo-{{ forloop.counter0 }}" value="{{ questao.titulo }}"></h2>
       {% for alternativa in questao.alternativa_set.all %}
@@ -108,12 +109,27 @@
         <input type="text" name="pontuacao-{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}" value="{{ alternativa.pontuacao }}"></p>
       {% endfor %}
     {% endfor %}
+    <input type="hidden" name='questoes_alternativas' id="questoes-alternativas-input">
   </div>
-  <button type="button" id="add-questao-btn">Adicionar Questão</button>
+  <button type="button" style="display: none" id="add-questao-btn">Adicionar Questão</button>
+  <div id="questao-container1">
+    <h3>niveis</h3>
+    {% for nivel in questionario.nivel_set.all %}
+      <h2><input type="text" name="nivel-titulo-{{ forloop.counter0 }}" value="{{ nivel.titulo }}"></h2>
+      {% for explicacao in nivel.explicacao_set.all %}
+        <p><input type="text" name="explicacao-{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}" value="{{ explicacao.texto }}">
+        <input type="text" name="pontuacao-{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}" value="{{ explicacao.pontuacao }}"></p>
+      {% endfor %}
+    {% endfor %}
+    <input type="hidden" name='questoes_alternativas1' id="questoes-alternativas-input1">
+    </div>
+  <button type="button" style="display: none" id="add-questao-btn1">Adicionar Nível</button>
+  <br>
+  <div style="text-align: center;">
     <button type="submit">Salvar Questionário</button>
+  </div>
   </form>
 {% endblock %}
-<a href="{% url 'edit_nivel' %}" class="btn btn-primary">Editar niveis</a>
 </main>
 </div>
 <script src="{% static 'js/edit.js' %}"></script>

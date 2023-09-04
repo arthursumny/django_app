@@ -12,9 +12,7 @@
     <header id="mr-nav">
         <span>
             <img src="{% static 'img\logo_branco.png' %}" alt="Logo Unoesc">   
-        </span>   
-        <a href="{% url 'edit' %}"><button>Criar Questionário</button></a>
-        <a href="{% url 'lista_questionarios' %}"><button>Questionários</button></a>
+        </span>
         <style>
             /* CSS específico para a página de detalhes do questionário */
             body {
@@ -73,39 +71,30 @@
                 font-size: 16px;
                 margin-bottom: 10px;
             }
-
-            #pontuacao-label {
-                margin-top:5px;
-                padding-top: 5px;
-            }
-
-            .arrow-link {
-                display: flex-box;
-                float: right;
-            }
         </style>
     </header>
     <div id="page">
         <main id="page-content">
             <div id="page-header">
-                {% block content %}
-                <a href="{% url 'edit_questionario' questionario.id %}"><button>Editar Questionário</button></a>
-                <a href="{% url 'inquerito' questionario.id %}" class="arrow-link">
-                    <img width="64" height="64" src="https://img.icons8.com/sf-black-filled/64/40C057/arrow.png" alt="arrow"/>
-                  </a>
-                {% endblock %}
                 <h1>Questionário</h1>
                 <h2>{{ questionario.titulo }}</h2>
                 <p>{{ questionario.explicacao}}</p>
             </div>
             <h4>Analise a afirmação de cada nível e assinale a resposta mais adequada para sua realidade atual:
             </h4>
+            <form action="{% url 'submit' questionario.id %}" method="post">
+                {% csrf_token %}
                 {% for questao in questionario.questao_set.all %}
                     <h2>{{ questao.titulo }}</h2>
                     {% for alternativa in questao.alternativa_set.all %}
-                        <p><label>{{ forloop.counter }}. "{{ alternativa.texto }}"</label> <br> <label id="pontuacao-label">Pontuação: {{ alternativa.pontuacao }}</label></p>
+                        <label>
+                            <input type="radio" name="questao{{ questao.id }}" value="{{ alternativa.id }}">
+                            {{ forloop.counter }}. "{{ alternativa.texto }}"
+                        </label><br>
                     {% endfor %}
                 {% endfor %}
+                <button type="submit">Enviar Respostas</button>
+            </form>
         </main>
     </div>
 </body>

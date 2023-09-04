@@ -2,7 +2,7 @@
 
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Questionario, Questao, Alternativa, Questao1, Alternativa1
+from .models import Questionario, Questao, Alternativa, Nivel, Explicacao
 from .forms import QuestionarioForm
 import json
 
@@ -34,11 +34,11 @@ def edit(request):
             for q_a1 in questoes_alternativas1:
                 questao_titulo1 = q_a1['questao1']
                 alternativas1 = q_a1['alternativas1']
-                questao1 = Questao1.objects.create(questionario=questionario, titulo1=questao_titulo1)
+                questao1 = Nivel.objects.create(questionario=questionario, titulo=questao_titulo1)
                 alternativa_part1 = alternativas1.split("#")
                 alternativa_text1 = alternativa_part1[0].strip()
                 pontuacao1 = int(alternativa_part1[1].strip())
-                alternativa1 = Alternativa1.objects.create(questao1=questao1, texto1=alternativa_text1, pontuacao1=pontuacao1)
+                alternativa1 = Explicacao.objects.create(nivel=questao1, texto=alternativa_text1, pontuacao=pontuacao1)
                            
             return redirect('lista_questionarios')
     else:
@@ -73,6 +73,7 @@ def edit_questionario(request, questionario_id):
     explicacao = questionario.explicacao
 
     questoes = questionario.questao_set.all()
+    niveis = questionario.nivel_set.all()
 
     alternativas = []
     for questao in questoes:
@@ -83,15 +84,29 @@ def edit_questionario(request, questionario_id):
         questionario.explicacao = request.POST.get('explicacao')
         questionario.save()
 
+
+        
         for i, questao in enumerate(questoes):
             questao.titulo = request.POST.get(f'questao-titulo-{i}')
             questao.save()
+            
 
             for j, alternativa in enumerate(alternativas[i]):
                 alternativa.texto = request.POST.get(f'alternativa-{i}-{j}')
                 alternativa.pontuacao = request.POST.get(f'pontuacao-{i}-{j}')
                 alternativa.save()
+                
 
+        for i, nivel in enumerate(niveis):
+            nivel.titulo = request.POST.get(f'nivel-titulo-{i}')
+            nivel.save()
+            
+            
+            for j, explicacao in enumerate(nivel.explicacao_set.all()):
+                explicacao.texto = request.POST.get(f'explicacao-{i}-{j}')
+                explicacao.pontuacao = request.POST.get(f'pontuacao-{i}-{j}')
+                explicacao.save()
+                
         return redirect('detalhes_questionario', questionario_id)
 
     return render(request, 'edit_questionario.html', {
@@ -102,43 +117,41 @@ def edit_questionario(request, questionario_id):
         'alternativas': alternativas,
     })
     
-def edit_nivel(request, questionario_id):
+def inquerito (request, questionario_id):
+        questionario = get_object_or_404(Questionario, pk=questionario_id)
+        return render(request, 'inquerito.html', {'questionario': questionario})
+    
+def submit_answers(request, questionario_id):
     questionario = get_object_or_404(Questionario, pk=questionario_id)
-    
-    titulo = questionario.titulo
-    explicacao = questionario.explicacao
-    
-    questoes1 = questionario.questao1_set.all()
-    
-    alternativas1 = []
-    for questao1 in questoes1:
-        alternativas1.append(questao1.alternativa1_set.all())
-        
-    if request.method == 'POST':
-        questionario.titulo = request.POST.get('titulo')
-        questionario.explicacao = request.POST.get('explicacao')
-        questionario.save()
-        
-        for i, questao1 in enumerate(questoes1):
-            questao1.titulo1 = request.POST.get(f'questao1-titulo-{i}')
-            questao1.save()
-            
-            for j, alternativa1 in enumerate(alternativas1[i]):
-                alternativa1.texto1 = request.POST.get(f'alternativa1-{i}-{j}')
-                alternativa1.pontuacao1 = request.POST.get(f'pontuacao1-{i}-{j}')
-                alternativa1.save()
-        
-        return redirect('detalhes_questionario', questionario_id)
-    
-    return render(request, 'edit_nivel.html', {
-        'questionario': questionario,
-        'titulo': titulo,
-        'explicacao': explicacao,
-        'questoes': questoes1,
-        'alternativas1': alternativas1,
-        
-    })
-        
-  
+    answers = [request.POST.get(f'questao{questao.id}') for questao in questionario.questao_set.all()]
+    total_pontuacao = sum([Alternativa.objects.get(pk=answer).pontuacao for answer in answers])
+    niveis = Explicacao.objects.order_by('pontuacao')
 
-   
+    print("total_pontuacao:", total_pontuacao)
+
+    intervals = []
+    previous_pontuacao = 0
+    for nivel in niveis:
+        interval = (previous_pontuacao, nivel.pontuacao)
+        intervals.append(interval)
+        previous_pontuacao = nivel.pontuacao + 1
+
+    print("intervals:", intervals)
+
+    explicacao = None
+    for interval in intervals:
+        if interval[0] <= total_pontuacao <= interval[1]:
+            nivel = Explicacao.objects.get(pontuacao=interval[1])
+            explicacao = nivel.texto
+            break
+
+    print("explicacao:", explicacao)
+    
+    context = {
+        'questionario': questionario,
+        'niveis': nivel,
+        'explicacao': explicacao
+    }
+    return render(request, 'submit.html', {'questionario': questionario, 'context': context})
+         
+         

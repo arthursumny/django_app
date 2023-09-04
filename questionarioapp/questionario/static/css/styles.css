@@ -71,3 +71,10 @@ header button:hover {
   text-align: center;
 }
 
+.arrow-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url('https://img.icons8.com/external-justicon-flat-justicon/64/000000/external-arrow-interface-justicon-flat-justicon.png');
+  background-size: cover;
+}

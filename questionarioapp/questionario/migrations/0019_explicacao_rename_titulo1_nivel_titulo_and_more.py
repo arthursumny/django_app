@@ -19,11 +19,11 @@ class Migration(migrations.Migration):
                 ('pontuacao', models.IntegerField(default=0)),
             ],
         ),
-        migrations.RenameField(
-            model_name='nivel',
-            old_name='titulo1',
-            new_name='titulo',
-        ),
+        #migrations.RenameField(
+        #    model_name='nivel',
+        #    old_name='titulo1',
+        #    new_name='titulo',
+        #),
         migrations.RenameModel(
             old_name='Questao1',
             new_name='Nivel',
@@ -31,9 +31,9 @@ class Migration(migrations.Migration):
         migrations.DeleteModel(
             name='Alternativa1',
         ),
-        migrations.AddField(
-            model_name='explicacao',
-            name='nivel',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='questionario.nivel'),
-        ),
+        #migrations.AddField(
+        #    model_name='explicacao',
+        #    name='nivel',
+        #    field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='questionario.nivel'),
+        #),
     ]

@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
         newQuestaoDiv1.appendChild(newAlternativasInput1);
         questaoContainer1.appendChild(newQuestaoDiv1);
     })
-
+      
     addQuestaoButton.addEventListener("click", function () {
         const newQuestaoDiv = document.createElement("div");
         newQuestaoDiv.classList.add("questao");
@@ -89,4 +89,5 @@ document.addEventListener("DOMContentLoaded", function () {
         const questoesAlternativasInput1 = document.getElementById("questoes-alternativas-input1");
         questoesAlternativasInput1.value = JSON.stringify(dadosQuestoesAlternativas1);
     });
+
 });
