@@ -26,54 +26,70 @@ document.addEventListener("DOMContentLoaded", function () {
     addQuestaoButton.addEventListener("click", function () {
         const newQuestaoDiv = document.createElement("div");
         newQuestaoDiv.classList.add("questao");
-
+    
         const newQuestaoInput = document.createElement("input");
         newQuestaoInput.setAttribute("type", "text");
         newQuestaoInput.setAttribute("name", "questoes");
         newQuestaoInput.setAttribute("placeholder", "Título da Questão");
-
-        const newAlternativasInput = document.createElement("input");
-        newAlternativasInput.setAttribute("type", "text");
-        newAlternativasInput.setAttribute("name", "alternativas");
-        newAlternativasInput.setAttribute("placeholder", "Alternativas separadas por ; (Ex: alternativa1{5};alternativa2{2})");
-
+    
+        const addAlternativaButton = document.createElement("button");
+        addAlternativaButton.textContent = "Adicionar Alternativa";
+        addAlternativaButton.setAttribute("type", "button");
+        
+        const alternativasDiv = document.createElement("div");
+    
+        addAlternativaButton.addEventListener("click", function () {
+            const newAlternativasInput = document.createElement("input");
+            newAlternativasInput.setAttribute("type", "text");
+            newAlternativasInput.setAttribute("name", "alternativas");
+            newAlternativasInput.setAttribute("placeholder", "Alternativa");
+    
+            alternativasDiv.appendChild(newAlternativasInput);
+        });
+    
         newQuestaoDiv.appendChild(newQuestaoInput);
-        newQuestaoDiv.appendChild(newAlternativasInput);
+        newQuestaoDiv.appendChild(addAlternativaButton);
+        newQuestaoDiv.appendChild(alternativasDiv);
         questaoContainer.appendChild(newQuestaoDiv);
     });
 
      // Novo evento para salvar os dados das questões e alternativas
     const form = document.getElementById("questionario-form");
-        form.addEventListener("submit", function () {
-        const questoesDivs = document.querySelectorAll(".questao");
-        const questoesDivs1 = document.querySelectorAll(".questao1");
-        const dadosQuestoesAlternativas1 = [];
-        const dadosQuestoesAlternativas = [];
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const questoesDivs = document.querySelectorAll(".questao");
+            const questoesDivs1 = document.querySelectorAll(".questao1");
+            const dadosQuestoesAlternativas1 = [];
+            const dadosQuestoesAlternativas = [];
 
-        questoesDivs1.forEach(function (questaoDiv1) {
-            const questaoTitulo1 = questaoDiv1.querySelector("[name='questoes1']").value.trim(); 
-            const alternativasTexto1 = questaoDiv1.querySelector("[name='alternativas1']").value.trim();
+            questoesDivs1.forEach(function (questaoDiv1) {
+                const questaoTitulo1 = questaoDiv1.querySelector("[name='questoes1']").value.trim(); 
+                const alternativasTexto1 = questaoDiv1.querySelector("[name='alternativas1']").value.trim();
 
-            if (questaoTitulo1 !== "") {
+                if (questaoTitulo1 !== "") {
 
-                const questaoAlternativas1 = {
-                    questao1: questaoTitulo1,
-                    alternativas1: alternativasTexto1,
-                };
+                    const questaoAlternativas1 = {
+                        questao1: questaoTitulo1,
+                        alternativas1: alternativasTexto1,
+                    };
 
-                dadosQuestoesAlternativas1.push(questaoAlternativas1);
-            }
-        })
+                    dadosQuestoesAlternativas1.push(questaoAlternativas1);
+                }
+            })
 
         questoesDivs.forEach(function (questaoDiv) {
             const questaoTitulo = questaoDiv.querySelector("[name='questoes']").value.trim(); 
-            const alternativasTexto = questaoDiv.querySelector("[name='alternativas']").value.trim(); 
+            const alternativasInputs = questaoDiv.querySelectorAll("[name='alternativas']");
+            const alternativasArray = [];
 
-            
-            if (questaoTitulo !== "") {
+            alternativasInputs.forEach(function (alternativaInput) {
+                const alternativaTexto = alternativaInput.value;
+                    if (alternativaTexto !== "") 
+                        alternativasArray.push(alternativaTexto);
                 
-                const alternativasArray = alternativasTexto.split(";");
+            });
 
+            if (questaoTitulo !== "" && alternativasArray.length > 0) {
                 const questaoAlternativas = {
                     questao: questaoTitulo,
                     alternativas: alternativasArray,
@@ -88,6 +104,9 @@ document.addEventListener("DOMContentLoaded", function () {
         questoesAlternativasInput.value = JSON.stringify(dadosQuestoesAlternativas);
         const questoesAlternativasInput1 = document.getElementById("questoes-alternativas-input1");
         questoesAlternativasInput1.value = JSON.stringify(dadosQuestoesAlternativas1);
+
+        console.log("Formulário enviado!");
+        form.submit();
     });
 
 });

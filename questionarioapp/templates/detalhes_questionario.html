@@ -94,6 +94,7 @@
                     <img width="64" height="64" src="https://img.icons8.com/sf-black-filled/64/40C057/arrow.png" alt="arrow"/>
                   </a>
                 {% endblock %}
+                <a href="{% url 'excluir_questionario' questionario.id %}"><button>Excluir</button></a>
                 <h1>Questionário</h1>
                 <h2>{{ questionario.titulo }}</h2>
                 <p>{{ questionario.explicacao}}</p>

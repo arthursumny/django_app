@@ -118,7 +118,7 @@
       <h2><input type="text" name="nivel-titulo-{{ forloop.counter0 }}" value="{{ nivel.titulo }}"></h2>
       {% for explicacao in nivel.explicacao_set.all %}
         <p><input type="text" name="explicacao-{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}" value="{{ explicacao.texto }}">
-        <input type="text" name="pontuacao-{{ forloop.parentloop.counter0 }}-{{ forloop.counter0 }}" value="{{ explicacao.pontuacao }}"></p>
+        <input type="text" name="pontuacao-{{ forloop.parentloop.counter0 }}" value="{{ explicacao.pontuacao }}"></p>
       {% endfor %}
     {% endfor %}
     <input type="hidden" name='questoes_alternativas1' id="questoes-alternativas-input1">

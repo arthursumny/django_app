@@ -22,11 +22,11 @@ def edit(request):
                 alternativas = q_a['alternativas']
                 questao = Questao.objects.create(questionario=questionario, titulo=questao_titulo)
                 for alternativa_texto in alternativas:
-                    alternativa_parts = alternativa_texto.split("{")
-                    alternativa_text = alternativa_parts[0].strip()
-                    pontuacao_part = alternativa_parts[1].split("}")
-                    pontuacao = int(pontuacao_part[0].strip()) if len(pontuacao_part) > 1 else 0
-                    alternativa = Alternativa.objects.create(questao=questao, texto=alternativa_text, pontuacao=pontuacao)
+                    alternativa_parts = alternativa_texto.split("#")
+                    if len(alternativa_parts) == 2:
+                        texto_alternativa = alternativa_parts[0].strip()
+                        pontuacao = int(alternativa_parts[1].strip())
+                        alternativa = Alternativa.objects.create(questao=questao, texto=texto_alternativa, pontuacao=pontuacao)
                     
             questoes_alternativas_json1 = form.cleaned_data['questoes_alternativas1']
             questoes_alternativas1 = json.loads(questoes_alternativas_json1)
@@ -104,7 +104,7 @@ def edit_questionario(request, questionario_id):
             
             for j, explicacao in enumerate(nivel.explicacao_set.all()):
                 explicacao.texto = request.POST.get(f'explicacao-{i}-{j}')
-                explicacao.pontuacao = request.POST.get(f'pontuacao-{i}-{j}')
+                explicacao.pontuacao = request.POST.get(f'pontuacao-{i}')
                 explicacao.save()
                 
         return redirect('detalhes_questionario', questionario_id)
@@ -144,13 +144,15 @@ def submit_answers(request, questionario_id):
             nivel = Explicacao.objects.get(pontuacao=interval[1])
             explicacao = nivel.texto
             break
-
+        else:
+            nivel = Explicacao.objects.get(pontuacao=interval[1])
+            explicacao = nivel.texto
+ 
     print("explicacao:", explicacao)
     
     context = {
         'questionario': questionario,
-        'niveis': nivel,
-        'explicacao': explicacao
+        'explicacao': explicacao,
     }
     return render(request, 'submit.html', {'questionario': questionario, 'context': context})
          
