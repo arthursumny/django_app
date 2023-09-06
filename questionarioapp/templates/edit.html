@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editor</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
 </head>
 <body>
     <header id="mr-nav">
@@ -23,21 +24,13 @@
             }
             #editar_questionario {
                 background-color: white;
-                border-radius: 5px;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                margin: 20px auto;
-                padding: 20px;
-                width: 80%;
             }
 
             #editar_questionario h1 {
                 font-size: 30px;
                 text-align: center;
                 margin-top: 10px;
-            }
-    
-            #questao-container {
-                text-align: center;
+                margin-bottom: 30px;
             }
     
             #page-header h1 {
@@ -80,8 +73,88 @@
             }
             #id_titulo {
                 margin-bottom: 10px;
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 5px;
+                border: none;
+                min-height: 40px;
+                text-align: center;
+                font-size: 20px;
+                font-family: Arial, sans-serif;
+                font-weight: bold;
+            }
+            #id_explicacao {
+                margin-bottom: 10px;
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 5px;
+                border: 2px dotted #ccc;
+                min-height: 40px;
+                text-align: justify;
+                font-size: 16px;
+                font-family: Arial, sans-serif;
+                wordwrap: break-word;
+            }
+            .questao input[name="questoes"] {
+                margin-bottom:5px;
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 5px;
+                border-top: 0.5px solid #ccc;
+                border-bottom: none;
+                border-left: 0.5px solid #ccc;
+                border-right: 0.5px solid #ccc;
+                min-height: 30px;
+                transition: height 0.2s;
+                margin-top: 10px;
+                font-size:16px;
+                font-family: Arial, sans-serif;
+                font-weight: bold;
+
+            }
+            .questao button {
+                margin-bottom: 5px;
             }
             .questao input[name="alternativas"] {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 5px;
+                border-top: none;
+                border-bottom: 0.5px solid #ccc;
+                border-left: 0.5px solid #ccc;
+                border-right: 0.5px solid #ccc;
+                min-height: 40px;
+                transition: height 0.2s;
+                margin-bottom: 10px;
+                position: relative;
+            }
+            .questao input[name="alternativas"] + span[name="remove-Alternativa-icon"]{
+                position: absolute;
+                top: 0;
+                right: 0;
+                cursor: pointer;
+                padding: 5px;
+            }
+            .questao1 input[name="questoes1"] {
+                margin-bottom:5px;
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 5px;
+                border: none;
+                min-height: 30px;
+                transition: height 0.2s;
+                margin-top: 10px;
+                font-size:16px;
+                font-family: Arial, sans-serif;
+                font-weight: bold;
+
+            }
+            .questao1 input[name="alternativas1"] {
                 display: block;
                 width: 100%;
                 box-sizing: border-box;
@@ -89,12 +162,64 @@
                 border: 1px solid #ccc;
                 min-height: 40px;
                 transition: height 0.2s;
+                margin-bottom: 10px;
             }
+            #button-questao-container {
+                text-align: center;
+                display: block;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                justify-content: center;
+            }
+            #button-questao-container1 {
+                display: block;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                justify-content: center;
+            }
+            .input-container {
+                position: relative;
+            }
+            
+            .input-container input[name="alternativas"] {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 5px;
+                border-top: none;
+                border-bottom: 0.5px solid #ccc;
+                border-left: 0.5px solid #ccc;
+                border-right: 0.5px solid #ccc;
+                min-height: 40px;
+                transition: height 0.2s;
+                margin-bottom: 0px;
+            }
+            
+            .input-container .remove-Alternativa-icon {
+                position: absolute;
+                top: 0;
+                right: 0;
+                cursor: pointer;
+                padding: 5px 25px 5px 5px;
+                background-color: #ccc;
+            }
+            .add-Alternativa-icon {
+                display: block;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                left: 0;
+            }
+
+            .input-container input[name="pontuacao"] {
+                display: block;
+                margin-bottom: 10px;
+            }
+
         </style>
     </header>
     <div id="page">
         <main id="page-content">
-            <div id="page-header"><h1>Criar Questionário</h1></div>
+            <div id="page-header"></div>
             <div id="editar_questionario">
                 <h1>Questionário</h1>
                 <form method="post" id="questionario-form">
@@ -105,13 +230,19 @@
                     <div id="questao-container">
                         <!-- Conteúdo das questões e alternativas será adicionado aqui -->
                         <input type="hidden" name='questoes_alternativas' id="questoes-alternativas-input">
-                    </div>
+                    </div id="button-questao-container">
+                    <div>
                     <button type="button" id="add-questao-btn">Adicionar Questão</button>
+                    <button type="button" id="remove-questao-btn">Remover Questão</button>
+                    </div>
                     <div id="questao-container1">
                         <!-- Conteúdo das questões e alternativas será adicionado aqui -->
                         <input type="hidden" name='questoes_alternativas1' id="questoes-alternativas-input1">
                     </div>
+                    <div id="button-questao-container1">
                     <button type="button" id="add-questao-btn1">Adicionar Nível</button>
+                    <button type="button" id="remove-questao-btn1">Remover Nível</button>
+                    </div>
                     <button type="submit">Salvar Questionário</button>
                 </form>
             </div>

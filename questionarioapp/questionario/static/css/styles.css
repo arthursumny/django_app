@@ -55,20 +55,18 @@ header button:hover {
   transition: background-color 0.3s ease;
 }
 #page {
-  margin: 0;
-  padding: 0;
-  position: relative;
-  left: 0;
-  transition: all 0.4s 0s ease;
+  background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    padding: 20px;
+    width: 80%;
     
 }
 
-#questionario-form {
-  background-color: white;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  text-align: center;
+#page-content {
+  margin: 0 auto;
+  max-width: 800px;
 }
 
 .arrow-icon {

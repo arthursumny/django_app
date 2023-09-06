@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const questaoContainer = document.getElementById("questao-container");
     const addQuestaoButton1 = document.getElementById("add-questao-btn1");
     const questaoContainer1 = document.getElementById("questao-container1");
+    const removeQuestaoButton = document.getElementById("remove-questao-btn");
+    const removeQuestaoButton1 = document.getElementById("remove-questao-btn1");
 
     addQuestaoButton1.addEventListener("click", function () {
         const newQuestaoDiv1 = document.createElement("div");
@@ -32,20 +34,48 @@ document.addEventListener("DOMContentLoaded", function () {
         newQuestaoInput.setAttribute("name", "questoes");
         newQuestaoInput.setAttribute("placeholder", "Título da Questão");
     
-        const addAlternativaButton = document.createElement("button");
-        addAlternativaButton.textContent = "Adicionar Alternativa";
-        addAlternativaButton.setAttribute("type", "button");
-        
-        const alternativasDiv = document.createElement("div");
+        const addAlternativaButton = document.createElement("span");
+        addAlternativaButton.innerHTML = '<i class="fas fa-plus-circle"></i>';
+        addAlternativaButton.style.cursor = "pointer";
+        addAlternativaButton.classList.add("add-Alternativa-icon");
+        addAlternativaButton.addEventListener("click", criarAlternativaInput);
     
-        addAlternativaButton.addEventListener("click", function () {
+        const alternativasDiv = document.createElement("div");
+        alternativasDiv.classList.add("input-container");
+    
+        function criarAlternativaInput() {
+            const alternativaContainer = document.createElement("div");
+            alternativaContainer.classList.add("input-container");
+
+            const pontuacaoInput = document.createElement("input");
+            pontuacaoInput.setAttribute("type", "text");
+            pontuacaoInput.setAttribute("name", "pontuacao");
+            pontuacaoInput.setAttribute("placeholder", "Pontuação");
+    
             const newAlternativasInput = document.createElement("input");
             newAlternativasInput.setAttribute("type", "text");
             newAlternativasInput.setAttribute("name", "alternativas");
             newAlternativasInput.setAttribute("placeholder", "Alternativa");
     
-            alternativasDiv.appendChild(newAlternativasInput);
-        });
+            const removeAlternativaIcon = document.createElement("span");
+            removeAlternativaIcon.textContent = "❌";
+            removeAlternativaIcon.style.cursor = "pointer";
+            removeAlternativaIcon.setAttribute("name", "remove-Alternativa-icon");
+            removeAlternativaIcon.addEventListener("click", function () {
+                alternativaContainer.removeChild(newAlternativasInput);
+                alternativaContainer.removeChild(pontuacaoInput);
+                alternativaContainer.removeChild(removeAlternativaIcon);
+            });
+
+            alternativaContainer.appendChild(newAlternativasInput);
+            alternativaContainer.appendChild(removeAlternativaIcon);
+            alternativaContainer.appendChild(pontuacaoInput);
+            alternativasDiv.appendChild(alternativaContainer);
+        }
+    
+        addAlternativaButton.addEventListener("click", criarAlternativaInput);
+    
+        criarAlternativaInput(); 
     
         newQuestaoDiv.appendChild(newQuestaoInput);
         newQuestaoDiv.appendChild(addAlternativaButton);
@@ -53,7 +83,21 @@ document.addEventListener("DOMContentLoaded", function () {
         questaoContainer.appendChild(newQuestaoDiv);
     });
 
-     // Novo evento para salvar os dados das questões e alternativas
+    removeQuestaoButton.addEventListener("click", function () {
+        const ultimaQuestao = questaoContainer.lastChild;
+    
+        if (ultimaQuestao && ultimaQuestao.classList.contains("questao")) {
+            questaoContainer.removeChild(ultimaQuestao);
+        }
+    });
+    removeQuestaoButton1.addEventListener("click", function () {
+       const ultimoNivel = questaoContainer1.lastChild;
+
+       if (ultimoNivel && ultimoNivel.classList.contains("questao1")) {
+           questaoContainer1.removeChild(ultimoNivel);
+       }
+    });
+
     const form = document.getElementById("questionario-form");
         form.addEventListener("submit", function (event) {
             event.preventDefault();
@@ -99,7 +143,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        // Converter os dados em JSON e definir no campo oculto
         const questoesAlternativasInput = document.getElementById("questoes-alternativas-input");
         questoesAlternativasInput.value = JSON.stringify(dadosQuestoesAlternativas);
         const questoesAlternativasInput1 = document.getElementById("questoes-alternativas-input1");

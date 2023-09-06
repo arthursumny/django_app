@@ -78,7 +78,13 @@
                 margin-top:5px;
                 padding-top: 5px;
             }
+            #questao {
+                font-size: 16px;
+            }
 
+            #alternativa {
+                font-size: 15px;
+            }
             .arrow-link {
                 display: flex-box;
                 float: right;
@@ -102,9 +108,9 @@
             <h4>Analise a afirmação de cada nível e assinale a resposta mais adequada para sua realidade atual:
             </h4>
                 {% for questao in questionario.questao_set.all %}
-                    <h2>{{ questao.titulo }}</h2>
+                    <h2 id="questao">{{ questao.titulo }}</h2>
                     {% for alternativa in questao.alternativa_set.all %}
-                        <p><label>{{ forloop.counter }}. "{{ alternativa.texto }}"</label> <br> <label id="pontuacao-label">Pontuação: {{ alternativa.pontuacao }}</label></p>
+                        <p><label id="alternativa">{{ forloop.counter }}. "{{ alternativa.texto }}"</label> <br> <label id="pontuacao-label">Pontuação: {{ alternativa.pontuacao }}</label></p>
                     {% endfor %}
                 {% endfor %}
         </main>

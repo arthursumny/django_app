@@ -127,16 +127,12 @@ def submit_answers(request, questionario_id):
     total_pontuacao = sum([Alternativa.objects.get(pk=answer).pontuacao for answer in answers])
     niveis = Explicacao.objects.order_by('pontuacao')
 
-    print("total_pontuacao:", total_pontuacao)
-
     intervals = []
     previous_pontuacao = 0
     for nivel in niveis:
         interval = (previous_pontuacao, nivel.pontuacao)
         intervals.append(interval)
         previous_pontuacao = nivel.pontuacao + 1
-
-    print("intervals:", intervals)
 
     explicacao = None
     for interval in intervals:
@@ -147,9 +143,7 @@ def submit_answers(request, questionario_id):
         else:
             nivel = Explicacao.objects.get(pontuacao=interval[1])
             explicacao = nivel.texto
- 
-    print("explicacao:", explicacao)
-    
+
     context = {
         'questionario': questionario,
         'explicacao': explicacao,
