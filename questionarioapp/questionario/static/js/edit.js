@@ -5,6 +5,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const questaoContainer1 = document.getElementById("questao-container1");
     const removeQuestaoButton = document.getElementById("remove-questao-btn");
     const removeQuestaoButton1 = document.getElementById("remove-questao-btn1");
+    const addImagemButton = document.getElementById("add-imagem-btn");
+
+    addImagemButton.addEventListener("click", function () {
+    })
 
     addQuestaoButton1.addEventListener("click", function () {
         const newQuestaoDiv1 = document.createElement("div");
@@ -18,10 +22,31 @@ document.addEventListener("DOMContentLoaded", function () {
         const newAlternativasInput1 = document.createElement("input");
         newAlternativasInput1.setAttribute("type", "text");
         newAlternativasInput1.setAttribute("name", "alternativas1");
-        newAlternativasInput1.setAttribute("placeholder", "Ex: Explicação do Nível #50");
+        newAlternativasInput1.setAttribute("placeholder", "Ex: Explicação do Nível");
+
+        const pontuacaoInput1 = document.createElement("input");
+        pontuacaoInput1.setAttribute("type", "text");
+        pontuacaoInput1.setAttribute("name", "pontuacao");
+        pontuacaoInput1.setAttribute("placeholder", "Pontuação");
+
+        pontuacaoInput1.addEventListener("change", function () {
+            const pontuacao = pontuacaoInput1.value || 0;
+            const alternativaTexto = newAlternativasInput1.value.split("#")[0];
+            newAlternativasInput1.value = `${alternativaTexto}#${pontuacao}`;
+        })
+
+        pontuacaoInput1.addEventListener("blur", function () {
+            if (pontuacaoInput1.value.trim() === "") {
+                const alternativaTexto = newAlternativasInput1.value.split("#")[0];
+                newAlternativasInput1.value = alternativaTexto;
+            }
+        })
+
+
 
         newQuestaoDiv1.appendChild(newQuestaoInput1);
         newQuestaoDiv1.appendChild(newAlternativasInput1);
+        newQuestaoDiv1.appendChild(pontuacaoInput1);
         questaoContainer1.appendChild(newQuestaoDiv1);
     })
       
