@@ -5,6 +5,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const questaoContainer1 = document.getElementById("questao-container1");
     const removeQuestaoButton = document.getElementById("remove-questao-btn");
     const removeQuestaoButton1 = document.getElementById("remove-questao-btn1");
+    const imageContainer = document.getElementById("image-container");
+    const addImageButton = document.getElementById("add-image-btn");
+
+    addImageButton.addEventListener("click", function () {
+        const newImageDiv = document.createElement("div");
+        newImageDiv.classList.add("Image");
+
+        const NewImageLabel = document.createElement("input");
+        NewImageLabel.setAttribute("type", "file");
+        NewImageLabel.setAttribute("name", "image");
+        NewImageLabel.setAttribute("id", "image");
+
+        newImageDiv.appendChild(NewImageLabel);
+        imageContainer.appendChild(newImageDiv);
+
+    });
 
     addQuestaoButton1.addEventListener("click", function () {
         const newQuestaoDiv1 = document.createElement("div");
@@ -118,8 +134,12 @@ document.addEventListener("DOMContentLoaded", function () {
             event.preventDefault();
             const questoesDivs = document.querySelectorAll(".questao");
             const questoesDivs1 = document.querySelectorAll(".questao1");
+            const imageDivs = document.querySelector("#image-container");
             const dadosQuestoesAlternativas1 = [];
             const dadosQuestoesAlternativas = [];
+            const dadosImage = [];
+
+            imageDivs = 
 
             questoesDivs1.forEach(function (questaoDiv1) {
                 const questaoTitulo1 = questaoDiv1.querySelector("[name='questoes1']").value.trim(); 
@@ -162,6 +182,8 @@ document.addEventListener("DOMContentLoaded", function () {
         questoesAlternativasInput.value = JSON.stringify(dadosQuestoesAlternativas);
         const questoesAlternativasInput1 = document.getElementById("questoes-alternativas-input1");
         questoesAlternativasInput1.value = JSON.stringify(dadosQuestoesAlternativas1);
+        const imageInput = document.getElementById("image-input");
+        imageInput.value = JSON.stringify(dadosImage);
 
         console.log("Formulário enviado!");
         form.submit();

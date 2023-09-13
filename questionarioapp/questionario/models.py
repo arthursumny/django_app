@@ -18,6 +18,7 @@ class Alternativa(models.Model):
 class Nivel(models.Model):
     questionario = models.ForeignKey(Questionario, on_delete=models.CASCADE)
     titulo = models.CharField(max_length=200)
+    imagem = models.FileField(default='')
     
 class Explicacao(models.Model):
     nivel = models.ForeignKey(Nivel, on_delete=models.CASCADE)

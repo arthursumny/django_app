@@ -30,11 +30,15 @@ def edit(request):
                     
             questoes_alternativas_json1 = form.cleaned_data['questoes_alternativas1']
             questoes_alternativas1 = json.loads(questoes_alternativas_json1)
+            image_json = form.cleaned_data['image']
+            image = json.loads(image_json)
+            
+            image = image[0]
             
             for q_a1 in questoes_alternativas1:
                 questao_titulo1 = q_a1['questao1']
                 alternativas1 = q_a1['alternativas1']
-                questao1 = Nivel.objects.create(questionario=questionario, titulo=questao_titulo1)
+                questao1 = Nivel.objects.create(questionario=questionario, titulo=questao_titulo1, imagem=image)
                 alternativa_part1 = alternativas1.split("#")
                 alternativa_text1 = alternativa_part1[0].strip()
                 pontuacao1 = int(alternativa_part1[1].strip())

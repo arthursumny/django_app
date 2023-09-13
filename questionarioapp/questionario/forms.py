@@ -7,4 +7,5 @@ class QuestionarioForm(forms.Form):
     explicacao = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Explicação do Questionário'}))
     questoes_alternativas = forms.CharField(widget=forms.HiddenInput)
     questoes_alternativas1 = forms.CharField(widget=forms.HiddenInput)
+    imagem = forms.FileField(widget=forms.HiddenInput)
     
