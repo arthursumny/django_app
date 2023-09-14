@@ -5,10 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const questaoContainer1 = document.getElementById("questao-container1");
     const removeQuestaoButton = document.getElementById("remove-questao-btn");
     const removeQuestaoButton1 = document.getElementById("remove-questao-btn1");
-    const addImagemButton = document.getElementById("add-imagem-btn");
-
-    addImagemButton.addEventListener("click", function () {
-    })
+    const imagemContainer = document.getElementById("imagem-container");
 
     addQuestaoButton1.addEventListener("click", function () {
         const newQuestaoDiv1 = document.createElement("div");
@@ -143,6 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
             event.preventDefault();
             const questoesDivs = document.querySelectorAll(".questao");
             const questoesDivs1 = document.querySelectorAll(".questao1");
+            const imagemDiv = document.querySelector(".name");
             const dadosQuestoesAlternativas1 = [];
             const dadosQuestoesAlternativas = [];
 
@@ -187,6 +185,8 @@ document.addEventListener("DOMContentLoaded", function () {
         questoesAlternativasInput.value = JSON.stringify(dadosQuestoesAlternativas);
         const questoesAlternativasInput1 = document.getElementById("questoes-alternativas-input1");
         questoesAlternativasInput1.value = JSON.stringify(dadosQuestoesAlternativas1);
+        const imagemInput = document.getElementById("image");
+        imagemInput.value = JSON.stringify(imagem);
 
         console.log("Formulário enviado!");
         form.submit();

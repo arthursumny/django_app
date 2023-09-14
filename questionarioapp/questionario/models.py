@@ -5,6 +5,7 @@ from django.db import models
 class Questionario(models.Model):
     titulo = models.CharField(max_length=100)
     explicacao = models.TextField()
+    imagem = models.ImageField(upload_to='media', blank=True, null=True, default=None)
 
 class Questao(models.Model):
     questionario = models.ForeignKey(Questionario, on_delete=models.CASCADE)

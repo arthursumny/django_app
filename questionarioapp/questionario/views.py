@@ -126,6 +126,8 @@ def submit_answers(request, questionario_id):
     answers = [request.POST.get(f'questao{questao.id}') for questao in questionario.questao_set.all()]
     total_pontuacao = sum([Alternativa.objects.get(pk=answer).pontuacao for answer in answers])
     niveis = Explicacao.objects.order_by('pontuacao')
+    image = questionario.imagem
+    quest_titulo = questionario.titulo
 
     intervals = []
     previous_pontuacao = 0
@@ -146,7 +148,10 @@ def submit_answers(request, questionario_id):
 
     context = {
         'questionario': questionario,
+        'titulo': quest_titulo,
         'explicacao': explicacao,
+        'total_pontuacao': total_pontuacao,
+        'image': image,
     }
     return render(request, 'submit.html', {'questionario': questionario, 'context': context})
          
