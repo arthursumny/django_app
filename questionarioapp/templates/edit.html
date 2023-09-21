@@ -219,6 +219,14 @@
                 margin-bottom: 10px;
             }
 
+            input#image {
+                display: none;
+            }
+
+            #imagem-span-text {
+                margin-top: 0px;
+                font-size: 12px;
+            }
         </style>
     </header>
     <div id="page">
@@ -226,10 +234,11 @@
             <div id="page-header"></div>
             <div id="editar_questionario">
                 <h1>Questionário</h1>
-                <form method="post" id="questionario-form">
+                <form method="post" id="questionario-form" enctype="multipart/form-data" action="{% url 'edit' %}">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <h4>Analise a afirmação de cada nível e assinale a resposta mais adequada para sua realidade atual:
+                    <span id="imagem-span-text">Escolha uma imagem para o nível</span>
+                    <h4>Analise a afirmação de cada questão e assinale a resposta mais adequada para sua realidade atual:
                     </h4>
                     <div id="questao-container">
                         <!-- Conteúdo das questões e alternativas será adicionado aqui -->
@@ -248,7 +257,7 @@
                     <button type="button" id="remove-questao-btn1">Remover Nível</button>
                     </div>
                     <div id="imagem-container">
-                        <input type="file" name="image" id="image" accept="image/*">
+                        <input type="file" type="hidden" name="image" id="image" accept="image/*">
                     </div>
                     <button type="submit">Salvar Questionário</button>
                 </form>

@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const questaoContainer1 = document.getElementById("questao-container1");
     const removeQuestaoButton = document.getElementById("remove-questao-btn");
     const removeQuestaoButton1 = document.getElementById("remove-questao-btn1");
-    const imagemContainer = document.getElementById("imagem-container");
 
     addQuestaoButton1.addEventListener("click", function () {
         const newQuestaoDiv1 = document.createElement("div");
@@ -138,9 +137,35 @@ document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("questionario-form");
         form.addEventListener("submit", function (event) {
             event.preventDefault();
+
+            // Verificar se uma imagem foi selecionada
+    const imageInput = document.getElementById("image");
+    if (imageInput.files.length > 0) {
+        const imagem = imageInput.files[0];
+        const formData = new FormData();
+
+        // Adicionar a imagem ao FormData
+        formData.append("image", imagem);
+
+        // Adicionar outros dados ao FormData, se necessário
+        // formData.append("outra_chave", "valor");
+
+        // Enviar o FormData
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())  // Se esperar uma resposta JSON
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => console.error('Erro:', error));
+    } else {
+        console.error('Nenhuma imagem selecionada.');
+    }
+
             const questoesDivs = document.querySelectorAll(".questao");
             const questoesDivs1 = document.querySelectorAll(".questao1");
-            const imagemDiv = document.querySelector(".name");
             const dadosQuestoesAlternativas1 = [];
             const dadosQuestoesAlternativas = [];
 
@@ -185,8 +210,6 @@ document.addEventListener("DOMContentLoaded", function () {
         questoesAlternativasInput.value = JSON.stringify(dadosQuestoesAlternativas);
         const questoesAlternativasInput1 = document.getElementById("questoes-alternativas-input1");
         questoesAlternativasInput1.value = JSON.stringify(dadosQuestoesAlternativas1);
-        const imagemInput = document.getElementById("image");
-        imagemInput.value = JSON.stringify(imagem);
 
         console.log("Formulário enviado!");
         form.submit();

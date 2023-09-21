@@ -27,10 +27,13 @@
     </header>
     <div id="page">
         <main id="page-content">
+            <div>
             <h1>{{ context.titulo }}</h1>
             <h2>Sua pontuação foi de: {{ context.total_pontuacao }}</h2>
+            <h2>{{ context.nivel_titulo }}</h2>
             <h3>{{ context.explicacao }}</h3>
-            <img src="{{ MEDIA_URL }}{{ context.image.url }}" alt="Image">
+            <img src="{{ MEDIA_URL }}{{ context.image.url }}" width="100%" height="500" alt="Image">
+            </div>
         </main>
     </div>
 </body>

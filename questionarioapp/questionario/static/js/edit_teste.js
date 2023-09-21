@@ -1,72 +1,33 @@
-addQuestaoButton.addEventListener("click", function () {
-    const newQuestaoDiv = document.createElement("div");
-    newQuestaoDiv.classList.add("questao");
+def submit_answers(request, questionario_id):
+    questionario = get_object_or_404(Questionario, pk=questionario_id)
+    answers = [request.POST.get(f'questao{questao.id}') for questao in questionario.questao_set.all()]
+    total_pontuacao = sum([Alternativa.objects.get(pk=answer).pontuacao for answer in answers])
+    niveis = Explicacao.objects.order_by('pontuacao')
+    image = questionario.imagem
+    quest_titulo = questionario.titulo
 
-    const newQuestaoInput = document.createElement("input");
-    newQuestaoInput.setAttribute("type", "text");
-    newQuestaoInput.setAttribute("name", "questoes");
-    newQuestaoInput.setAttribute("placeholder", "Título da Questão");
+    intervals = []
+    previous_pontuacao = 0
+    for nivel in niveis:
+        interval = (previous_pontuacao, nivel.pontuacao)
+        intervals.append(interval)
+        previous_pontuacao = nivel.pontuacao + 1
 
-    const addAlternativaButton = document.createElement("span");
-    addAlternativaButton.innerHTML = '<i class="fas fa-plus-circle"></i>';
-    addAlternativaButton.style.cursor = "pointer";
-    addAlternativaButton.classList.add("add-Alternativa-icon");
-    addAlternativaButton.addEventListener("click", criarAlternativaInput);
+    explicacao = None
+    for interval in intervals:
+        if interval[0] <= total_pontuacao <= interval[1]:
+            nivel = Explicacao.objects.get(pontuacao=interval[1])
+            explicacao = nivel.texto
+            break
+        else:
+            nivel = Explicacao.objects.get(pontuacao=interval[1])
+            explicacao = nivel.texto
 
-    const alternativasDiv = document.createElement("div");
-    alternativasDiv.classList.add("input-container");
-
-    function criarAlternativaInput() {
-        const alternativaContainer = document.createElement("div");
-        alternativaContainer.classList.add("input-container");
-    
-        const pontuacaoInput = document.createElement("input");
-        pontuacaoInput.setAttribute("type", "text");
-        pontuacaoInput.setAttribute("name", "pontuacao");
-        pontuacaoInput.setAttribute("placeholder", "Pontuação");
-    
-        const newAlternativasInput = document.createElement("input");
-        newAlternativasInput.setAttribute("type", "text");
-        newAlternativasInput.setAttribute("name", "alternativas");
-        newAlternativasInput.setAttribute("placeholder", "Alternativa");
-    
-        const removeAlternativaIcon = document.createElement("span");
-        removeAlternativaIcon.textContent = "❌";
-        removeAlternativaIcon.style.cursor = "pointer";
-        removeAlternativaIcon.setAttribute("name", "remove-Alternativa-icon");
-        removeAlternativaIcon.addEventListener("click", function () {
-            alternativaContainer.removeChild(newAlternativasInput);
-            alternativaContainer.removeChild(pontuacaoInput);
-            alternativaContainer.removeChild(removeAlternativaIcon);
-        });
-
-        function atualizarAlternativa() {
-            const pontuacao = pontuacaoInput.value || 0;
-            const alternativaTexto = newAlternativasInput.value.split("#")[0];
-            newAlternativasInput.value = `${alternativaTexto}#${pontuacao}`;
-        }
-    
-        pontuacaoInput.addEventListener("change", atualizarAlternativa);
-
-        pontuacaoInput.addEventListener("blur", function () {
-            if (pontuacaoInput.value.trim() === "") {
-                const alternativaTexto = newAlternativasInput.value.split("#")[0];
-                newAlternativasInput.value = alternativaTexto;
-            }
-        });
-
-        alternativaContainer.appendChild(newAlternativasInput);
-        alternativaContainer.appendChild(removeAlternativaIcon);
-        alternativaContainer.appendChild(pontuacaoInput);
-        alternativasDiv.appendChild(alternativaContainer);
+    context = {
+        'questionario': questionario,
+        'titulo': quest_titulo,
+        'explicacao': explicacao,
+        'total_pontuacao': total_pontuacao,
+        'image': image,
     }
-
-    addAlternativaButton.addEventListener("click", criarAlternativaInput);
-
-    criarAlternativaInput(); 
-
-    newQuestaoDiv.appendChild(newQuestaoInput);
-    newQuestaoDiv.appendChild(addAlternativaButton);
-    newQuestaoDiv.appendChild(alternativasDiv);
-    questaoContainer.appendChild(newQuestaoDiv);
-});
+    return render(request, 'submit.html', {'questionario': questionario, 'context': context})

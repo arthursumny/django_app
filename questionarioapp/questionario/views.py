@@ -1,18 +1,23 @@
 # questionarioapp/views.py
 
-from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Questionario, Questao, Alternativa, Nivel, Explicacao
 from .forms import QuestionarioForm
+from django.conf import settings
 import json
+from django.core.mail import send_mail
 
 def edit(request):
     if request.method == 'POST':
-        form = QuestionarioForm(request.POST)
+        form = QuestionarioForm(request.POST, request.FILES)
         if form.is_valid():
             titulo = form.cleaned_data['titulo']
             explicacao = form.cleaned_data['explicacao']
             questionario = Questionario.objects.create(titulo=titulo, explicacao=explicacao)
+            imagem = request.FILES.get('image')
+            
+            questionario.imagem = form.cleaned_data['imagem']
+            questionario.save()
 
             questoes_alternativas_json = form.cleaned_data['questoes_alternativas']
             questoes_alternativas = json.loads(questoes_alternativas_json)
@@ -71,6 +76,7 @@ def edit_questionario(request, questionario_id):
 
     titulo = questionario.titulo
     explicacao = questionario.explicacao
+    image = questionario.imagem
 
     questoes = questionario.questao_set.all()
     niveis = questionario.nivel_set.all()
@@ -80,8 +86,17 @@ def edit_questionario(request, questionario_id):
         alternativas.append(questao.alternativa_set.all())
 
     if request.method == 'POST':
+        nova_imagem = request.FILES.get('nova_imagem')
+        imagem_atual = request.POST.get('imagem_atual')
         questionario.titulo = request.POST.get('titulo')
         questionario.explicacao = request.POST.get('explicacao')
+        questionario.imagem = request.FILES.get('image')
+        
+        if nova_imagem:
+            questionario.imagem = nova_imagem
+        elif imagem_atual:
+            questionario.imagem = imagem_atual
+            
         questionario.save()
 
 
@@ -112,6 +127,7 @@ def edit_questionario(request, questionario_id):
     return render(request, 'edit_questionario.html', {
         'questionario': questionario,
         'titulo': titulo,
+        'image': image,
         'explicacao': explicacao,
         'questoes': questoes,
         'alternativas': alternativas,
@@ -122,6 +138,8 @@ def inquerito (request, questionario_id):
         return render(request, 'inquerito.html', {'questionario': questionario})
     
 def submit_answers(request, questionario_id):
+    nome = request.POST.get('nome')
+    email = request.POST.get('email')
     questionario = get_object_or_404(Questionario, pk=questionario_id)
     answers = [request.POST.get(f'questao{questao.id}') for questao in questionario.questao_set.all()]
     total_pontuacao = sum([Alternativa.objects.get(pk=answer).pontuacao for answer in answers])
@@ -137,14 +155,19 @@ def submit_answers(request, questionario_id):
         previous_pontuacao = nivel.pontuacao + 1
 
     explicacao = None
+    nivel_correspondente = None
     for interval in intervals:
         if interval[0] <= total_pontuacao <= interval[1]:
             nivel = Explicacao.objects.get(pontuacao=interval[1])
+            nivel_correspondente = Explicacao.objects.get(pontuacao=interval[1]).nivel
             explicacao = nivel.texto
             break
         else:
             nivel = Explicacao.objects.get(pontuacao=interval[1])
+            nivel_correspondente = Explicacao.objects.get(pontuacao=interval[1]).nivel
             explicacao = nivel.texto
+
+    nivel_titulo = nivel_correspondente.titulo
 
     context = {
         'questionario': questionario,
@@ -152,7 +175,22 @@ def submit_answers(request, questionario_id):
         'explicacao': explicacao,
         'total_pontuacao': total_pontuacao,
         'image': image,
+        'nivel_titulo': nivel_titulo,
+        'nome': nome,
+        'email': email,
     }
+    
+    subject = f"Questionário: {quest_titulo}"
+    print("subject", subject)
+    message = f"Olá {nome}, você acertou {total_pontuacao} pontos e está no {nivel_titulo} do questionário {quest_titulo}."
+    print("message", message)
+    email_from = settings.EMAIL_HOST_USER
+    print("email_from", email_from)
+    recipients = [email]
+    print("recipients", recipients)
+    
+    Email = send_mail(subject, message, email_from, recipients)
+    
     return render(request, 'submit.html', {'questionario': questionario, 'context': context})
          
          

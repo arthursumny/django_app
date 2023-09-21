@@ -1,101 +1,110 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Editor</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
-</head>
-<body>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <script
+      src="https://kit.fontawesome.com/a076d05399.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
     <header id="mr-nav">
-        <span>
-            <img src="{% static 'img\logo_branco.png' %}" alt="Logo Unoesc">   
-        </span>
-        <style>
-            /* CSS específico para a página de detalhes do questionário */
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #f5f5f5;
-                margin: 0;
-                padding: 0;
-            }
-            #page {
-                background-color: white;
-                border-radius: 5px;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                margin: 20px auto;
-                padding: 20px;
-                width: 80%;
-            }
-    
-            #page-content {
-                margin: 0 auto;
-                max-width: 800px;
-            }
-    
-            #page-header h1 {
-                font-size: 30px;
-                margin-bottom: 30px;
-                text-align: center;
-                
-            }
+      <span>
+        <img src="{% static 'img\logo_branco.png' %}" alt="Logo Unoesc" />
+      </span>
+      <style>
+        /* CSS específico para a página de detalhes do questionário */
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f5f5f5;
+          margin: 0;
+          padding: 0;
+        }
+        #page {
+          background-color: white;
+          border-radius: 5px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          margin: 20px auto;
+          padding: 20px;
+          width: 80%;
+        }
 
-            #page-header h2 {
-                font-size: 20px;
-                margin-bottom: 10px;
-                text-align: center;
-                
-            }
-    
-            #page-header p {
-                font-size: 16px;
-                margin-bottom: 20px;
-                text-align: justify;
-            }
+        #page-content {
+          margin: 0 auto;
+          max-width: 800px;
+        }
 
-            h4 {
-                font-size: 12px;
-                margin-top: 20px;
-                text-align: center;
-            }
-    
-            h2 {
-                font-size: 20px;
-                margin-top: 20px;
-                margin-bottom: 20px;
-            }
-    
-            p {
-                font-size: 16px;
-                margin-bottom: 10px;
-            }
-        </style>
+        #page-header h1 {
+          font-size: 30px;
+          margin-bottom: 30px;
+          text-align: center;
+        }
+
+        #page-header h2 {
+          font-size: 20px;
+          margin-bottom: 10px;
+          text-align: center;
+        }
+
+        #page-header p {
+          font-size: 16px;
+          margin-bottom: 20px;
+          text-align: justify;
+        }
+
+        h4 {
+          font-size: 12px;
+          margin-top: 20px;
+          text-align: center;
+        }
+
+        h2 {
+          font-size: 20px;
+          margin-top: 20px;
+          margin-bottom: 20px;
+        }
+
+        p {
+          font-size: 16px;
+          margin-bottom: 10px;
+        }
+      </style>
     </header>
     <div id="page">
-        <main id="page-content">
-            <div id="page-header">
-                <h1>Questionário</h1>
-                <h2>{{ questionario.titulo }}</h2>
-                <p>{{ questionario.explicacao}}</p>
-            </div>
-            <h4>Analise a afirmação de cada nível e assinale a resposta mais adequada para sua realidade atual:
-            </h4>
-            <form action="{% url 'submit' questionario.id %}" method="post">
-                {% csrf_token %}
-                {% for questao in questionario.questao_set.all %}
-                    <h2>{{ questao.titulo }}</h2>
-                    {% for alternativa in questao.alternativa_set.all %}
-                        <label>
-                            <input type="radio" name="questao{{ questao.id }}" value="{{ alternativa.id }}">
-                            {{ forloop.counter }}. "{{ alternativa.texto }}"
-                        </label><br>
-                    {% endfor %}
-                {% endfor %}
-                <button type="submit">Enviar Respostas</button>
-            </form>
-        </main>
+      <main id="page-content">
+        <div id="page-header">
+          <h1>Questionário</h1>
+          <h2>{{ questionario.titulo }}</h2>
+          <p>{{ questionario.explicacao}}</p>
+        </div>
+        <h4>
+          Analise a afirmação de cada nível e assinale a resposta mais adequada
+          para sua realidade atual:
+        </h4>
+        <form action="{% url 'submit' questionario.id %}" method="post">
+          {% csrf_token %} {% for questao in questionario.questao_set.all %}
+          <h2>{{ questao.titulo }}</h2>
+          {% for alternativa in questao.alternativa_set.all %}
+          <label>
+            <input
+              type="radio"
+              name="questao{{ questao.id }}"
+              value="{{ alternativa.id }}"
+            />
+            {{ forloop.counter }}. "{{ alternativa.texto }}" </label
+          ><br />
+          {% endfor %} {% endfor %}
+          <label for="nome">Nome:</label>
+          <input type="text" name="nome" id="nome" required /><br />
+          <label for="email">Email:</label>
+          <input type="email" name="email" id="email" required /><br />
+          <button type="submit">Enviar Respostas</button>
+        </form>
+      </main>
     </div>
-</body>
+  </body>
 </html>

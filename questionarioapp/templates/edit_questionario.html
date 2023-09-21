@@ -98,6 +98,7 @@
     {% csrf_token %}
     <h2><input type="text" name="titulo" value="{{ questionario.titulo }}"></h2>
     <p><textarea cols="100" rows="10" wrap="hard" name="explicacao">{{ questionario.explicacao }}</textarea></p>
+    <img src="{{ MEDIA_URL }}{{ image.url }}" width="320" height="240" alt="Imagem">
   </div>
   <h4>Analise a afirmação de cada nível e assinale a resposta mais adequada para sua realidade atual:</h4>
   <div id="questao-container">
